@@ -17,6 +17,7 @@ app.use(express.json())
 app.use(cors({
   origin:[
     "https://online-food-admin.netlify.app/",
+    "https://online-food-delivery1.netlify.app"
   ]
 }))
 
