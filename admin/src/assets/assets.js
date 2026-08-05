@@ -5,7 +5,7 @@ import profile_image from './profile_image.png'
 import upload_area from './upload_area.png'
 import parcel_icon from './parcel_icon.png'
 
-export const url = import.meta.env.VITE_BACKEND_URL || 'https://online-food-delivery-f656.onrender.com'
+export const url = import.meta.env.VITE_BACKEND_URL || (import.meta.env.DEV ? 'http://localhost:4000' : 'https://online-food-delivery-f656.onrender.com')
 export const currency = '₹'
 
 export const assets ={
