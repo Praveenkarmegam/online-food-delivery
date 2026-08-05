@@ -14,12 +14,7 @@ const port = process.env.PORT || 4000;
 
 // middlewares
 app.use(express.json())
-app.use(cors({
-  origin:[
-    "https://online-food-admin.netlify.app/",
-    "https://online-food-delivery1.netlify.app"
-  ]
-}))
+app.use(cors())
 
 // db connection
 connectDB()

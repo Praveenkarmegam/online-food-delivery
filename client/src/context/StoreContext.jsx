@@ -5,12 +5,28 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
 
-    const url = "https://online-food-delivery-f656.onrender.com"
+    const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
     const [food_list, setFoodList] = useState([]);
     const [cartItems, setCartItems] = useState({});
     const [token, setToken] = useState("")
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortOption, setSortOption] = useState("default");
+    const [userData, setUserData] = useState(null);
     const currency = "₹";
     const deliveryCharge = 50;
+
+    const fetchUserProfile = async (authToken) => {
+        const activeToken = authToken || token || localStorage.getItem("token");
+        if (!activeToken) return;
+        try {
+            const response = await axios.get(url + "/api/user/get-profile", { headers: { token: activeToken } });
+            if (response.data && response.data.success) {
+                setUserData(response.data.userData);
+            }
+        } catch (error) {
+            console.error("Error fetching user profile:", error);
+        }
+    }
 
     const addToCart = async (itemId) => {
         if (!cartItems[itemId]) {
@@ -34,35 +50,52 @@ const StoreContextProvider = (props) => {
     const getTotalCartAmount = () => {
         let totalAmount = 0;
         for (const item in cartItems) {
-            try {
-              if (cartItems[item] > 0) {
+            if (cartItems[item] > 0) {
                 let itemInfo = food_list.find((product) => product._id === item);
-                totalAmount += itemInfo.price * cartItems[item];
-            }  
-            } catch (error) {
-                
+                if (itemInfo) {
+                    totalAmount += itemInfo.price * cartItems[item];
+                }
             }
-            
         }
         return totalAmount;
     }
 
     const fetchFoodList = async () => {
-        const response = await axios.get(url + "/api/food/list");
-        setFoodList(response.data.data)
+        try {
+            const response = await axios.get(url + "/api/food/list");
+            if (response.data && response.data.success) {
+                setFoodList(response.data.data || []);
+            }
+        } catch (error) {
+            console.error("Error fetching food list:", error);
+            setFoodList([]);
+        }
     }
 
-    const loadCartData = async (token) => {
-        const response = await axios.post(url + "/api/cart/get", {}, { headers: token });
-        setCartItems(response.data.cartData);
+    const loadCartData = async (tokenParam) => {
+        try {
+            const authToken = typeof tokenParam === 'object' && tokenParam !== null ? tokenParam.token : tokenParam;
+            if (!authToken) return;
+            const response = await axios.post(url + "/api/cart/get", {}, { headers: { token: authToken } });
+            if (response.data && response.data.success && response.data.cartData) {
+                setCartItems(response.data.cartData);
+            } else {
+                setCartItems({});
+            }
+        } catch (error) {
+            console.error("Error loading cart data:", error);
+            setCartItems({});
+        }
     }
 
     useEffect(() => {
         async function loadData() {
             await fetchFoodList();
-            if (localStorage.getItem("token")) {
-                setToken(localStorage.getItem("token"))
-                await loadCartData({ token: localStorage.getItem("token") })
+            const savedToken = localStorage.getItem("token");
+            if (savedToken) {
+                setToken(savedToken);
+                await loadCartData(savedToken);
+                await fetchUserProfile(savedToken);
             }
         }
         loadData()
@@ -81,7 +114,14 @@ const StoreContextProvider = (props) => {
         loadCartData,
         setCartItems,
         currency,
-        deliveryCharge
+        deliveryCharge,
+        searchQuery,
+        setSearchQuery,
+        sortOption,
+        setSortOption,
+        userData,
+        setUserData,
+        fetchUserProfile
     };
 
     return (

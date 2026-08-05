@@ -28,6 +28,31 @@
     gap: 40px;
 }
 
+.navbar-search-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navbar-search-input {
+    padding: 7px 14px;
+    border: 1px solid #FF4C24;
+    border-radius: 20px;
+    outline: none;
+    font-size: 14px;
+    width: 180px;
+    transition: width 0.3s ease;
+}
+
+.navbar-search-btn {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.navbar-search-btn:hover {
+    transform: scale(1.1);
+}
+
 .navbar-search-icon{
 position: relative;
 }

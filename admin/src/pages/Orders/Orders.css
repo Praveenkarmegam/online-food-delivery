@@ -1,39 +1,113 @@
+.order-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.status-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.status-tab-btn {
+    padding: 8px 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.status-tab-btn:hover {
+    background: #fff5f3;
+    color: tomato;
+    border-color: #ffdcd6;
+}
+
+.status-tab-btn.active {
+    background: tomato;
+    color: #fff;
+    border-color: tomato;
+}
+
 .order-item{
     display: grid;
     grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr;
     align-items: start;
     gap: 30px;
-    border: 1px solid tomato;
+    border: 1px solid #ffdcd6;
+    border-radius: 12px;
+    background: #fff;
     padding: 20px;
-    margin: 30px 0px;
+    margin-bottom: 20px;
     font-size: 14px;
     color: #505050;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
 }
+
 .order-item-food,.order-item-name{
     font-weight: 600;
 }
+
 .order-item-name{
-    margin-top: 30px;
+    margin-top: 15px;
     margin-bottom: 5px;
+    color: #262626;
 }
+
 .order-item-address{
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    color: #666;
 }
+
+.order-item-phone, .order-item-date {
+    font-size: 12px;
+    color: #777;
+    margin-top: 2px;
+}
+
+.order-item-amount {
+    font-weight: 600;
+    color: #262626;
+}
+
 .order-item select{
-    background-color: #ffe8e4;
+    background-color: #fff5f3;
     border: 1px solid tomato;
-    width: max(10vw,120px);
+    border-radius: 6px;
+    width: max(10vw,140px);
     padding: 10px;
     outline:none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
 }
+
+.no-orders-msg {
+    padding: 50px 0;
+    text-align: center;
+    color: #888;
+    font-size: 16px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px dashed #ddd;
+}
+
 @media(max-width:1000px){
     .order-item{
         font-size: 12px;
         grid-template-columns: 0.5fr 2fr 1fr;
-        padding: 15px 8px;
+        padding: 15px 12px;
     }
     .order-item select{
-        padding: 5px;
+        padding: 6px;
         font-size: 12px;
     }
     .order-item img{

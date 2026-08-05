@@ -21,9 +21,28 @@ const PlaceOrder = () => {
         phone: ""
     })
 
-    const { getTotalCartAmount, token, food_list, cartItems, url, setCartItems,currency,deliveryCharge } = useContext(StoreContext);
+    const { getTotalCartAmount, token, food_list, cartItems, url, setCartItems, currency, deliveryCharge, userData } = useContext(StoreContext);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (userData) {
+            const nameParts = (userData.name || "").split(" ");
+            const firstName = nameParts[0] || "";
+            const lastName = nameParts.slice(1).join(" ") || "";
+            setData({
+                firstName,
+                lastName,
+                email: userData.email || "",
+                street: userData.address?.street || "",
+                city: userData.address?.city || "",
+                state: userData.address?.state || "",
+                zipcode: userData.address?.zipcode || "",
+                country: userData.address?.country || "",
+                phone: userData.phone || ""
+            });
+        }
+    }, [userData]);
 
     const onChangeHandler = (event) => {
         const name = event.target.name
@@ -36,8 +55,7 @@ const PlaceOrder = () => {
         let orderItems = [];
         food_list.map(((item) => {
             if (cartItems[item._id] > 0) {
-                let itemInfo = item;
-                itemInfo["quantity"] = cartItems[item._id];
+                let itemInfo = { ...item, quantity: cartItems[item._id] };
                 orderItems.push(itemInfo)
             }
         }))

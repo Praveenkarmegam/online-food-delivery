@@ -52,4 +52,31 @@ const removeFood = async (req, res) => {
 
 }
 
-export { listFood, addFood, removeFood }
+// update food
+const updateFood = async (req, res) => {
+    try {
+        const { id, name, description, price, category } = req.body;
+        const updateData = {
+            name,
+            description,
+            price,
+            category
+        };
+
+        if (req.file) {
+            updateData.image = req.file.filename;
+            const existingFood = await foodModel.findById(id);
+            if (existingFood && existingFood.image) {
+                fs.unlink(`uploads/${existingFood.image}`, () => { });
+            }
+        }
+
+        await foodModel.findByIdAndUpdate(id, updateData);
+        res.json({ success: true, message: "Food Updated" });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error updating food" });
+    }
+}
+
+export { listFood, addFood, removeFood, updateFood }

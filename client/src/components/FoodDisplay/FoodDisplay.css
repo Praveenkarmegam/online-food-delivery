@@ -12,3 +12,37 @@
     gap: 30px;
     row-gap: 50px;
 }
+
+.food-display-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.food-sort-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: #49557E;
+}
+
+.food-sort-control select {
+    padding: 8px 14px;
+    border: 1px solid #FF4C24;
+    border-radius: 20px;
+    outline: none;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    background: #fff;
+}
+
+.no-foods-found {
+    padding: 50px 0;
+    text-align: center;
+    color: #888;
+    font-size: 18px;
+}

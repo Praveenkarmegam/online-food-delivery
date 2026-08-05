@@ -36,7 +36,7 @@ const LoginPopup = ({ setShowLogin }) => {
         if (response.data.success) {
             setToken(response.data.token)
             localStorage.setItem("token", response.data.token)
-            loadCartData({token:response.data.token})
+            loadCartData(response.data.token)
             setShowLogin(false)
         }
         else {
@@ -52,7 +52,7 @@ const LoginPopup = ({ setShowLogin }) => {
                 </div>
                 <div className="login-popup-inputs">
                     {currState === "Sign Up" ? <input name='name' onChange={onChangeHandler} value={data.name} type="text" placeholder='Your name' required /> : <></>}
-                    <input name='email' onChange={onChangeHandler} value={data.email} type="email" placeholder='Your email' />
+                    <input name='email' onChange={onChangeHandler} value={data.email} type="email" placeholder='Your email' required />
                     <input name='password' onChange={onChangeHandler} value={data.password} type="password" placeholder='Password' required />
                 </div>
                 <button>{currState === "Login" ? "Login" : "Create account"}</button>

@@ -113,6 +113,8 @@ const updateStatus = async (req, res) => {
 
 }
 
+import foodModel from "../models/foodModel.js";
+
 const verifyOrder = async (req, res) => {
     const { orderId, success } = req.body;
     try {
@@ -130,4 +132,70 @@ const verifyOrder = async (req, res) => {
 
 }
 
-export { placeOrder, listOrders, userOrders, updateStatus, verifyOrder, placeOrderCod }
+// Cancel order by user
+const cancelOrder = async (req, res) => {
+    try {
+        const { orderId } = req.body;
+        const order = await orderModel.findById(orderId);
+        if (!order) {
+            return res.json({ success: false, message: "Order not found" });
+        }
+        if (order.userId !== req.body.userId) {
+            return res.json({ success: false, message: "Unauthorized to cancel this order" });
+        }
+        if (order.status !== "Food Processing") {
+            return res.json({ success: false, message: `Cannot cancel order in '${order.status}' status` });
+        }
+
+        await orderModel.findByIdAndUpdate(orderId, { status: "Cancelled" });
+        res.json({ success: true, message: "Order Cancelled Successfully" });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error cancelling order" });
+    }
+}
+
+// Get admin stats/metrics
+const getAdminStats = async (req, res) => {
+    try {
+        const orders = await orderModel.find({});
+        const foodCount = await foodModel.countDocuments({});
+        const userCount = await userModel.countDocuments({});
+
+        let totalRevenue = 0;
+        let pendingCount = 0;
+        let outForDeliveryCount = 0;
+        let deliveredCount = 0;
+        let cancelledCount = 0;
+
+        orders.forEach(order => {
+            if (order.status !== "Cancelled") {
+                totalRevenue += (order.amount || 0);
+            }
+            if (order.status === "Food Processing") pendingCount++;
+            else if (order.status === "Out for delivery") outForDeliveryCount++;
+            else if (order.status === "Delivered") deliveredCount++;
+            else if (order.status === "Cancelled") cancelledCount++;
+        });
+
+        res.json({
+            success: true,
+            stats: {
+                totalOrders: orders.length,
+                totalRevenue,
+                totalFoods: foodCount,
+                totalUsers: userCount,
+                pendingCount,
+                outForDeliveryCount,
+                deliveredCount,
+                cancelledCount,
+                recentOrders: orders.slice(-5).reverse()
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error fetching admin stats" });
+    }
+}
+
+export { placeOrder, listOrders, userOrders, updateStatus, verifyOrder, placeOrderCod, cancelOrder, getAdminStats }
